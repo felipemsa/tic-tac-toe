@@ -6,14 +6,19 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.felipemsa.tictactoe.R;
-import com.felipemsa.tictactoe.model.Choose;
+import com.felipemsa.tictactoe.model.Choice;
+import com.felipemsa.tictactoe.model.Turn;
+import com.felipemsa.tictactoe.util.PlayerHelper;
+import com.felipemsa.tictactoe.util.TurnToogle;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
-	private Choose mChoose;
+	private Choice mPlayerChoice;
+	private Choice otherChoice;
+	private Turn mTurn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,24 +26,10 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 
-		findViewById(R.id.play_with_cross).setSelected(true);
-	}
+		mPlayerChoice = PlayerHelper.getInstance().getPlayerChoice();
+		otherChoice = PlayerHelper.getInstance().getOtherChoice();
 
-	@OnClick({R.id.play_with_cross, R.id.play_with_circle})
-	public void playWith(View selected) {
-		findViewById(R.id.play_with_cross).setSelected(false);
-		findViewById(R.id.play_with_circle).setSelected(false);
-
-		selected.setSelected(true);
-
-		switch (selected.getId()) {
-			case R.id.play_with_circle:
-				mChoose = Choose.CIRCLE;
-				break;
-			case R.id.play_with_cross:
-				mChoose = Choose.CROSS;
-				break;
-		}
+		mTurn = PlayerHelper.getInstance().playerTurn();
 	}
 
 	@OnClick({R.id.cell_one_one, R.id.cell_one_two, R.id.cell_one_three,
@@ -46,11 +37,22 @@ public class MainActivity extends AppCompatActivity {
 			R.id.cell_three_one, R.id.cell_three_two, R.id.cell_three_three})
 	public void cellClick(View cell) {
 		ImageView selectedCell = (ImageView) cell;
+		if (selectedCell.getDrawable() != null)
+			return;
 
-		if (mChoose == Choose.CIRCLE)
-			selectedCell.setImageResource(R.drawable.ic_circle);
+		if (mTurn == Turn.PLAYER)
+			selectedCell.setImageResource(getDrawableFromChoice(mPlayerChoice));
 		else
-			selectedCell.setImageResource(R.drawable.ic_cross);
+			selectedCell.setImageResource(getDrawableFromChoice(otherChoice));
+
+		mTurn = TurnToogle.toogle(mTurn);
+	}
+
+	private int getDrawableFromChoice(Choice choice) {
+		if (choice == Choice.CROSS)
+			return R.drawable.ic_cross;
+		else
+			return R.drawable.ic_circle;
 	}
 
 }

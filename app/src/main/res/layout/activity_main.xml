@@ -7,40 +7,6 @@
     android:background="@android:color/white"
     tools:context="com.felipemsa.tictactoe.ui.activity.MainActivity">
 
-    <TextView
-        android:id="@+id/play_with_anchor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="Play with:"
-        android:textColor="#000"
-        android:textSize="14sp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/play_with_anchor"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/play_with_cross"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_marginRight="32dp"
-            android:background="@drawable/selector_choose"
-            android:src="@drawable/ic_cross"/>
-
-        <ImageView
-            android:id="@+id/play_with_circle"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:background="@drawable/selector_choose"
-            android:padding="3dp"
-            android:src="@drawable/ic_circle"/>
-    </LinearLayout>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
