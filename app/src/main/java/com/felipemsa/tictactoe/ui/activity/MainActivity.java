@@ -9,7 +9,7 @@ import com.felipemsa.tictactoe.R;
 import com.felipemsa.tictactoe.model.Choice;
 import com.felipemsa.tictactoe.model.Turn;
 import com.felipemsa.tictactoe.util.PlayerHelper;
-import com.felipemsa.tictactoe.util.TurnToogle;
+import com.felipemsa.tictactoe.util.TurnToggle;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 		else
 			selectedCell.setImageResource(getDrawableFromChoice(otherChoice));
 
-		mTurn = TurnToogle.toogle(mTurn);
+		mTurn = TurnToggle.toggle(mTurn);
 	}
 
 	private int getDrawableFromChoice(Choice choice) {

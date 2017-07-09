@@ -6,9 +6,9 @@ import com.felipemsa.tictactoe.model.Turn;
  * Created by Felipe Almeida on 07/09/2017.
  */
 
-public class TurnToogle {
+public class TurnToggle {
 
-	public static Turn toogle(Turn turn) {
+	public static Turn toggle(Turn turn) {
 		if (turn == Turn.PLAYER)
 			return Turn.OTHER;
 		else
