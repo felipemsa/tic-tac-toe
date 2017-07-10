@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
 		if (gameCompleted()) {
 			declareGameResult(null);
-//			return;
+			return;
 		}
 
 		Winner winner = WinnerChecker.check(localChoice, hash);
