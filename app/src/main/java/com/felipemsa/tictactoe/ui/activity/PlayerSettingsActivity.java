@@ -3,6 +3,7 @@ package com.felipemsa.tictactoe.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -31,7 +32,7 @@ public class PlayerSettingsActivity extends AppCompatActivity {
 	}
 
 	@OnClick({R.id.play_with_cross, R.id.play_with_circle})
-	public void playWith(View selected) {
+	public void playWithClick(View selected) {
 		findViewById(R.id.play_with_cross).setSelected(false);
 		findViewById(R.id.play_with_circle).setSelected(false);
 
@@ -46,12 +47,21 @@ public class PlayerSettingsActivity extends AppCompatActivity {
 				break;
 		}
 
-		new Handler().postDelayed(new Runnable() {
+		gotoHome(TimeUnit.SECONDS.toMillis(1));
+	}
+
+	@OnClick(R.id.player_vs_player)
+	public void vsClick() {
+		gotoHome(0);
+	}
+
+	private void gotoHome(long delay) {
+		new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				startActivity(new Intent(PlayerSettingsActivity.this, MainActivity.class));
 				finish();
 			}
-		}, TimeUnit.SECONDS.toMillis(1));
+		}, delay);
 	}
 }

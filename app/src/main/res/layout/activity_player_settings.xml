@@ -12,14 +12,8 @@
         android:src="@drawable/ligo_tictactoe"/>
 
     <TextView
-        android:id="@+id/play_with_anchor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="Play with:"
-        android:textColor="#000"
-        android:textSize="18sp"/>
+        style="@style/PlayWith"
+        android:text="Play with:"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,5 +38,19 @@
             android:padding="16dp"
             android:src="@drawable/ic_circle"/>
     </LinearLayout>
+
+    <TextView
+        style="@style/PlayWith"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="16dp"
+        android:text="or"/>
+
+    <TextView
+        android:id="@+id/player_vs_player"
+        style="@style/PlayWith"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_unselected"
+        android:padding="32dp"
+        android:text="Player vs Player"/>
 
 </LinearLayout>

@@ -5,9 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:padding="16dp"
     tools:context="com.felipemsa.tictactoe.ui.activity.MainActivity">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/PlayWith"
+            android:text="Turn:"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/play_with_cross"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:background="@drawable/selector_choose"
+                android:padding="10dp"
+                android:src="@drawable/ic_cross"/>
+
+            <ImageView
+                android:id="@+id/play_with_circle"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:background="@drawable/selector_choose"
+                android:padding="16dp"
+                android:src="@drawable/ic_circle"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/matrix"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -102,4 +140,52 @@
                 tools:src="@drawable/ic_cross"/>
         </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/winner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/matrix"
+        android:layout_alignEnd="@id/matrix"
+        android:layout_alignLeft="@id/matrix"
+        android:layout_alignRight="@id/matrix"
+        android:layout_alignStart="@id/matrix"
+        android:layout_alignTop="@id/matrix"
+        android:background="#AA000000"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txt_winner"
+            style="@style/PlayWith"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Winner: "
+            android:textColor="#1cef54"
+            android:textSize="28sp"/>
+
+        <ImageView
+            android:id="@+id/img_winner"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:background="@drawable/bg_selected"
+            android:padding="10dp"
+            android:src="@drawable/ic_circle"
+            android:tint="#1cef54"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/play_again"
+        style="@style/PlayWith"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_unselected"
+        android:padding="28dp"
+        android:text="Play Again!"
+        android:visibility="gone"/>
 </RelativeLayout>

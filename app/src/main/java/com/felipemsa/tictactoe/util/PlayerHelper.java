@@ -32,7 +32,7 @@ public class PlayerHelper {
 	}
 
 	public Choice getOtherChoice() {
-		switch (playerChoice) {
+		switch (getPlayerChoice()) {
 			case CROSS:
 				return Choice.CIRCLE;
 			case CIRCLE:
@@ -43,7 +43,7 @@ public class PlayerHelper {
 	}
 
 	public Turn playerTurn() {
-		if (playerChoice == Choice.CROSS)
+		if (getPlayerChoice() == Choice.CROSS)
 			return Turn.PLAYER;
 		else
 			return Turn.OTHER;
