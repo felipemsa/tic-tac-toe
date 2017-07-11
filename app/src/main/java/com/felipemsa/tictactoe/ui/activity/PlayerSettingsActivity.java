@@ -2,8 +2,6 @@ package com.felipemsa.tictactoe.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,8 +9,6 @@ import android.view.View;
 import com.felipemsa.tictactoe.R;
 import com.felipemsa.tictactoe.model.Choice;
 import com.felipemsa.tictactoe.util.PlayerHelper;
-
-import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -47,21 +43,15 @@ public class PlayerSettingsActivity extends AppCompatActivity {
 				break;
 		}
 
-		gotoHome(TimeUnit.SECONDS.toMillis(1));
+		Intent intent = new Intent(PlayerSettingsActivity.this, MainActivity.class);
+		intent.putExtra("ai_player", true);
+		startActivity(intent);
+		finish();
 	}
 
 	@OnClick(R.id.player_vs_player)
 	public void vsClick() {
-		gotoHome(0);
-	}
-
-	private void gotoHome(long delay) {
-		new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				startActivity(new Intent(PlayerSettingsActivity.this, MainActivity.class));
-				finish();
-			}
-		}, delay);
+		startActivity(new Intent(PlayerSettingsActivity.this, MainActivity.class));
+		finish();
 	}
 }

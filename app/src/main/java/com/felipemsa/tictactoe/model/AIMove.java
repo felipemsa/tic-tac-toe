@@ -5,4 +5,11 @@ package com.felipemsa.tictactoe.model;
  */
 
 public class AIMove {
+	public int x;
+	public int y;
+
+	public AIMove(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 }

@@ -1,6 +1,7 @@
 package com.felipemsa.tictactoe.ui.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,11 +12,15 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.felipemsa.tictactoe.R;
+import com.felipemsa.tictactoe.model.AIMove;
 import com.felipemsa.tictactoe.model.Choice;
 import com.felipemsa.tictactoe.model.Turn;
 import com.felipemsa.tictactoe.model.Winner;
+import com.felipemsa.tictactoe.util.MoveChooser;
 import com.felipemsa.tictactoe.util.PlayerHelper;
 import com.felipemsa.tictactoe.util.WinnerChecker;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 	private Choice otherChoice;
 	private Turn mTurn;
 
+	private boolean aiPlaying;
+
 	private Choice hash[][] = new Choice[3][3];
 
 	@Override
@@ -51,12 +58,17 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 
+		aiPlaying = getIntent().getBooleanExtra("ai_player", false);
+
 		mPlayerChoice = PlayerHelper.getInstance().getPlayerChoice();
 		otherChoice = PlayerHelper.getInstance().getOtherChoice();
 
 		mTurn = PlayerHelper.getInstance().playerTurn();
 
 		findViewById(R.id.play_with_cross).setSelected(true);
+
+		if (mTurn != Turn.PLAYER)
+			aiMove();
 	}
 
 	@OnClick({R.id.cell_one_one, R.id.cell_one_two, R.id.cell_one_three,
@@ -106,18 +118,34 @@ public class MainActivity extends AppCompatActivity {
 				break;
 		}
 
-		if (gameCompleted()) {
-			declareGameResult(null);
-			return;
-		}
-
 		Winner winner = WinnerChecker.check(localChoice, hash);
 		if (winner != null) {
 			declareGameResult(winner);
 			return;
 		}
 
-		mTurn = toggle(mTurn);
+		if (gameCompleted()) {
+			declareGameResult(null);
+			return;
+		}
+
+		if (mTurn != Turn.PLAYER)
+			aiMove();
+	}
+
+	private void aiMove() {
+		if (!aiPlaying)
+			return;
+
+		findViewById(R.id.ai_progress).setVisibility(View.VISIBLE);
+		final AIMove move = MoveChooser.choose(PlayerHelper.getInstance().getOtherChoice(), hash);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				performClick(move);
+				findViewById(R.id.ai_progress).setVisibility(View.GONE);
+			}
+		}, TimeUnit.SECONDS.toMillis(2));
 	}
 
 	private void declareGameResult(Winner result) {
@@ -137,6 +165,96 @@ public class MainActivity extends AppCompatActivity {
 
 	private void select(int x, int y, Choice choice) {
 		hash[x][y] = choice;
+		mTurn = toggle(mTurn);
+	}
+
+	private void performClick(AIMove move) {
+		switch (move.x) {
+			case 0:
+				switch (move.y) {
+					case 0:
+						findViewById(R.id.cell_one_one).post(new Runnable() {
+							@Override
+							public void run() {
+								findViewById(R.id.cell_one_one).performClick();
+							}
+						});
+						break;
+					case 1:
+						findViewById(R.id.cell_one_two).post(new Runnable() {
+							@Override
+							public void run() {
+								findViewById(R.id.cell_one_two).performClick();
+							}
+						});
+						break;
+					case 2:
+						findViewById(R.id.cell_one_three).post(new Runnable() {
+							@Override
+							public void run() {
+								findViewById(R.id.cell_one_three).performClick();
+							}
+						});
+						break;
+				}
+				break;
+			case 1:
+				switch (move.y) {
+					case 0:
+						findViewById(R.id.cell_two_one).post(new Runnable() {
+							@Override
+							public void run() {
+								findViewById(R.id.cell_two_one).performClick();
+							}
+						});
+						break;
+					case 1:
+						findViewById(R.id.cell_two_two).post(new Runnable() {
+							@Override
+							public void run() {
+								findViewById(R.id.cell_two_two).performClick();
+							}
+						});
+						break;
+					case 2:
+						findViewById(R.id.cell_two_three).post(new Runnable() {
+							@Override
+							public void run() {
+								findViewById(R.id.cell_two_three).performClick();
+							}
+						});
+						break;
+				}
+				break;
+			case 2:
+				switch (move.y) {
+					case 0:
+						findViewById(R.id.cell_three_one).post(new Runnable() {
+							@Override
+							public void run() {
+								findViewById(R.id.cell_three_one).performClick();
+							}
+						});
+						break;
+					case 1:
+						findViewById(R.id.cell_three_two).post(new Runnable() {
+							@Override
+							public void run() {
+								findViewById(R.id.cell_three_two).performClick();
+							}
+						});
+						break;
+					case 2:
+						findViewById(R.id.cell_three_three).post(new Runnable() {
+							@Override
+							public void run() {
+								findViewById(R.id.cell_three_three).performClick();
+							}
+						});
+						break;
+				}
+				break;
+		}
 	}
 
 	private int getDrawableFromChoice(Choice choice) {
@@ -151,10 +269,16 @@ public class MainActivity extends AppCompatActivity {
 		findViewById(R.id.play_with_circle).setSelected(false);
 
 		if (turn == Turn.PLAYER) {
-			findViewById(R.id.play_with_circle).setSelected(true);
+			if (mPlayerChoice == Choice.CROSS)
+				findViewById(R.id.play_with_circle).setSelected(true);
+			else
+				findViewById(R.id.play_with_cross).setSelected(true);
 			return Turn.OTHER;
 		} else {
-			findViewById(R.id.play_with_cross).setSelected(true);
+			if (otherChoice == Choice.CIRCLE)
+				findViewById(R.id.play_with_cross).setSelected(true);
+			else
+				findViewById(R.id.play_with_circle).setSelected(true);
 			return Turn.PLAYER;
 		}
 	}
@@ -170,13 +294,23 @@ public class MainActivity extends AppCompatActivity {
 
 	@OnClick(R.id.play_again)
 	public void reset(View button) {
-		mTurn = toggle(Turn.OTHER);
+		findViewById(R.id.play_with_cross).setSelected(true);
+		findViewById(R.id.play_with_circle).setSelected(false);
+
+		if (mPlayerChoice == Choice.CROSS)
+			mTurn = Turn.PLAYER;
+		else
+			mTurn = Turn.OTHER;
+
 		for (int id : ids) {
 			((ImageView) findViewById(id)).setImageDrawable(null);
 		}
 		hash = new Choice[3][3];
 		button.setVisibility(GONE);
 		mLinearWinner.setVisibility(GONE);
+
+		if (mTurn != Turn.PLAYER)
+			aiMove();
 	}
 
 	@Override
