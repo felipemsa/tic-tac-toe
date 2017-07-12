@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,7 +18,7 @@ import com.felipemsa.tictactoe.model.AIMove;
 import com.felipemsa.tictactoe.model.Choice;
 import com.felipemsa.tictactoe.model.Turn;
 import com.felipemsa.tictactoe.model.Winner;
-import com.felipemsa.tictactoe.util.MoveChooser;
+import com.felipemsa.tictactoe.util.AIMoveChooser;
 import com.felipemsa.tictactoe.util.PlayerHelper;
 import com.felipemsa.tictactoe.util.WinnerChecker;
 
@@ -31,6 +33,8 @@ import static com.felipemsa.tictactoe.R.id.winner;
 
 public class MainActivity extends AppCompatActivity {
 
+	@BindView(R.id.toolbar)
+	Toolbar mToolbar;
 	@BindView(winner)
 	LinearLayout mLinearWinner;
 	@BindView(R.id.txt_winner)
@@ -57,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
+
+		setSupportActionBar(mToolbar);
 
 		aiPlaying = getIntent().getBooleanExtra("ai_player", false);
 
@@ -138,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 			return;
 
 		findViewById(R.id.ai_progress).setVisibility(View.VISIBLE);
-		final AIMove move = MoveChooser.choose(PlayerHelper.getInstance().getOtherChoice(), hash);
+		final AIMove move = AIMoveChooser.choose(PlayerHelper.getInstance().getOtherChoice(), hash);
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -169,91 +175,30 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void performClick(AIMove move) {
-		switch (move.x) {
+		StringBuilder sb = new StringBuilder("cell_")
+				.append(ordinal(move.x))
+				.append("_")
+				.append(ordinal(move.y));
+
+		final int cellId = getResources().getIdentifier(sb.toString(), "id", getPackageName());
+		findViewById(cellId).post(new Runnable() {
+			@Override
+			public void run() {
+				findViewById(cellId).performClick();
+			}
+		});
+	}
+
+	private String ordinal(int i) {
+		switch (i) {
 			case 0:
-				switch (move.y) {
-					case 0:
-						findViewById(R.id.cell_one_one).post(new Runnable() {
-							@Override
-							public void run() {
-								findViewById(R.id.cell_one_one).performClick();
-							}
-						});
-						break;
-					case 1:
-						findViewById(R.id.cell_one_two).post(new Runnable() {
-							@Override
-							public void run() {
-								findViewById(R.id.cell_one_two).performClick();
-							}
-						});
-						break;
-					case 2:
-						findViewById(R.id.cell_one_three).post(new Runnable() {
-							@Override
-							public void run() {
-								findViewById(R.id.cell_one_three).performClick();
-							}
-						});
-						break;
-				}
-				break;
+				return "one";
 			case 1:
-				switch (move.y) {
-					case 0:
-						findViewById(R.id.cell_two_one).post(new Runnable() {
-							@Override
-							public void run() {
-								findViewById(R.id.cell_two_one).performClick();
-							}
-						});
-						break;
-					case 1:
-						findViewById(R.id.cell_two_two).post(new Runnable() {
-							@Override
-							public void run() {
-								findViewById(R.id.cell_two_two).performClick();
-							}
-						});
-						break;
-					case 2:
-						findViewById(R.id.cell_two_three).post(new Runnable() {
-							@Override
-							public void run() {
-								findViewById(R.id.cell_two_three).performClick();
-							}
-						});
-						break;
-				}
-				break;
+				return "two";
 			case 2:
-				switch (move.y) {
-					case 0:
-						findViewById(R.id.cell_three_one).post(new Runnable() {
-							@Override
-							public void run() {
-								findViewById(R.id.cell_three_one).performClick();
-							}
-						});
-						break;
-					case 1:
-						findViewById(R.id.cell_three_two).post(new Runnable() {
-							@Override
-							public void run() {
-								findViewById(R.id.cell_three_two).performClick();
-							}
-						});
-						break;
-					case 2:
-						findViewById(R.id.cell_three_three).post(new Runnable() {
-							@Override
-							public void run() {
-								findViewById(R.id.cell_three_three).performClick();
-							}
-						});
-						break;
-				}
-				break;
+				return "three";
+			default:
+				return "";
 		}
 	}
 
@@ -292,6 +237,15 @@ public class MainActivity extends AppCompatActivity {
 		return true;
 	}
 
+	private boolean gameStarted() {
+		for (int x = 0; x < 3; x++)
+			for (int y = 0; y < 3; y++)
+				if (hash[x][y] != null)
+					return true;
+
+		return false;
+	}
+
 	@OnClick(R.id.play_again)
 	public void reset(View button) {
 		findViewById(R.id.play_with_cross).setSelected(true);
@@ -314,17 +268,27 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home)
+			onBackPressed();
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
 	public void onBackPressed() {
-		new MaterialDialog.Builder(this)
-				.title("Leave game?")
-				.positiveText("Yes")
-				.onPositive(new MaterialDialog.SingleButtonCallback() {
-					@Override
-					public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-						finish();
-					}
-				})
-				.negativeText("No")
-				.show();
+		if (gameStarted())
+			new MaterialDialog.Builder(this)
+					.title("Leave game?")
+					.positiveText("Yes")
+					.onPositive(new MaterialDialog.SingleButtonCallback() {
+						@Override
+						public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+							finish();
+						}
+					})
+					.negativeText("No")
+					.show();
+		else
+			finish();
 	}
 }

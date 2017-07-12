@@ -46,12 +46,10 @@ public class PlayerSettingsActivity extends AppCompatActivity {
 		Intent intent = new Intent(PlayerSettingsActivity.this, MainActivity.class);
 		intent.putExtra("ai_player", true);
 		startActivity(intent);
-		finish();
 	}
 
 	@OnClick(R.id.player_vs_player)
 	public void vsClick() {
 		startActivity(new Intent(PlayerSettingsActivity.this, MainActivity.class));
-		finish();
 	}
 }

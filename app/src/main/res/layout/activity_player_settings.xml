@@ -9,7 +9,7 @@
         android:layout_height="150dp"
         android:layout_gravity="center_horizontal"
         android:layout_margin="64dp"
-        android:src="@drawable/ligo_tictactoe"/>
+        android:src="@drawable/logo_tictactoe"/>
 
     <TextView
         style="@style/PlayWith"
